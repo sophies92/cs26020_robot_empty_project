@@ -1,0 +1,40 @@
+#!/bin/bash
+
+projectname=(${PWD##*/})
+
+src=(
+    src/*.*
+    )
+
+lib=(
+    lib/*.*
+)
+
+Make()
+{
+    ./xc16 -o bin/${projectname}.bin ${src[@]} ${lib[@]}
+}
+
+Hex()
+{
+    /opt/microchip/xc16/v2.10/bin/xc16-bin2hex -a bin/${projectname}.bin
+}
+
+Upload()
+{
+    faload bin/${projectname}.bin
+}
+
+while getopts "mhu" option; do
+   case $option in
+    m)  #compile
+        Make 
+        exit;;
+    h)  #make hex
+        Hex
+        exit;;
+    u)  #upload to robot
+        Upload
+        exit;;
+   esac
+done
